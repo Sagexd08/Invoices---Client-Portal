@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                 if (!dbUser) {
                     dbUser = await prisma.user.create({
                         data: {
-                            supabaseUserId: `client-${client.id}`,  // used as unique internal ID
+                            authId: `client-${client.id}`,  // used as unique internal ID
                             email: `${client.clientId.toLowerCase().replace(/-/g, '')}@portal.internal`,
                             role: 'client_admin',
                             clientId: client.id,
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
                 await prisma.user.upsert({
                     where: { email },
                     create: {
-                        supabaseUserId: `google-${user.id}`,
+                        authId: `google-${user.id}`,
                         email,
                         name: user.name ?? null,
                         role: 'company_admin',
