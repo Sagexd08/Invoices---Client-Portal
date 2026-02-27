@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx neonctl@latest:*)",
+      "Bash(ls C:\\\\Users\\\\sohom\\\\OneDrive\\\\Desktop\\\\Invoices & Client Portal\\\\client-portal:*)",
+      "Bash(ls:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npx neonctl:*)",
+      "Bash(Test-NetConnection:*)",
+      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_4VjCPskgdE5S@ep-frosty-sky-airtpxcl-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require\" npx prisma:*)",
+      "Bash(yarn add:*)",
+      "mcp__Neon__list_projects",
+      "mcp__Neon__get_connection_string",
+      "mcp__Neon__describe_branch",
+      "mcp__Neon__describe_project",
+      "mcp__Neon__prepare_database_migration",
+      "mcp__Neon__run_sql",
+      "mcp__Neon__complete_database_migration",
+      "Bash(taskkill:*)",
+      "Bash(cmd:*)",
+      "Bash(powershell:*)"
+    ]
+  }
+}

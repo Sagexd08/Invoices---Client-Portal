@@ -1,0 +1,134 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Client {
+  id               String    @id @default(uuid())
+  clientId         String    @unique // Format: CL-YYYY-XXXX
+  name             String
+  billingAddress   String?
+  timezone         String?
+  currency         String    @default("USD")
+  razorpayCustomerId String?
+  status           String    @default("active") // active, suspended
+  createdAt        DateTime  @default(now())
+
+  users            User[]
+  invoices         Invoice[]
+  requests         Request[]
+}
+
+model User {
+  id             String    @id @default(uuid())
+  authId         String    @unique
+  clientId       String?
+  email          String    @unique
+  name           String?
+  role           String    @default("client_admin") // company_admin, project_manager, accountant, client_admin, client_collaborator
+  createdAt      DateTime  @default(now())
+
+  client         Client?   @relation(fields: [clientId], references: [id])
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  sku         String   @unique
+  name        String
+  description String?
+  price       Float
+  taxRate     Float    @default(0)
+  isActive    Boolean  @default(true)
+
+  invoiceLines InvoiceLine[]
+}
+
+model Invoice {
+  id                    String    @id @default(uuid())
+  invoiceNumber         String    @unique // INV-YYYY-00001
+  clientId              String
+  razorpayOrderId String?
+  status                String    @default("draft") // draft, pending, partially_paid, paid, overdue, cancelled, refunded
+  subtotal              Float
+  taxAmount             Float
+  totalAmount           Float
+  currency              String    @default("USD")
+  dueDate               DateTime?
+  issuedAt              DateTime?
+  createdAt             DateTime  @default(now())
+
+  client                Client    @relation(fields: [clientId], references: [id])
+  lines                 InvoiceLine[]
+  payments              Payment[]
+}
+
+model InvoiceLine {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  serviceId   String?
+  description String
+  quantity    Int
+  unitPrice   Float
+  taxRate     Float    @default(0)
+  lineTotal   Float
+
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  service     Service? @relation(fields: [serviceId], references: [id])
+}
+
+model Payment {
+  id                    String   @id @default(uuid())
+  invoiceId             String
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  amount                Float
+  status                String   @default("succeeded")
+  paidAt                DateTime @default(now())
+
+  invoice               Invoice  @relation(fields: [invoiceId], references: [id])
+}
+
+model Request {
+  id          String   @id @default(uuid())
+  clientId    String
+  title       String
+  fieldsJson  String?  // JSON string
+  status      String   @default("open") // open, submitted, approved, rejected
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+
+  client      Client   @relation(fields: [clientId], references: [id])
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  threadId    String   // Could link to Request or Invoice ID
+  authorId    String
+  body        String
+  createdAt   DateTime @default(now())
+}
+
+model Attachment {
+  id          String   @id @default(uuid())
+  ownerType   String   // request, message
+  ownerId     String
+  storagePath String
+  virusStatus String   @default("pending") // pending, clean, infected
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorId     String
+  action      String
+  entityType  String
+  entityId    String
+  changesJson String?  // JSON string
+  createdAt   DateTime @default(now())
+}

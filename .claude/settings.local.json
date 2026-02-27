@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find C:\\\\Users\\\\sohom\\\\OneDrive\\\\Desktop\\\\Invoices & Client Portal\\\\client-portal:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)"
+    ]
+  }
+}
