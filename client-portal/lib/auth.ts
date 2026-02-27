@@ -10,7 +10,6 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
 
     providers: [
-        // ── Admin: Google OAuth (oxifylabs.app only) ──────────────────
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -48,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                 if (!dbUser) {
                     dbUser = await prisma.user.create({
                         data: {
-                            authId: `client-${client.id}`,
+                            supabaseUserId: `client-${client.id}`,  // used as unique internal ID
                             email: `${client.clientId.toLowerCase().replace(/-/g, '')}@portal.internal`,
                             role: 'client_admin',
                             clientId: client.id,
@@ -79,7 +78,7 @@ export const authOptions: NextAuthOptions = {
                 await prisma.user.upsert({
                     where: { email },
                     create: {
-                        authId: `google-${user.id}`,
+                        supabaseUserId: `google-${user.id}`,
                         email,
                         name: user.name ?? null,
                         role: 'company_admin',

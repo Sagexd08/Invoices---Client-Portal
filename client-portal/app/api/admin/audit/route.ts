@@ -20,7 +20,6 @@ export async function GET(req: Request) {
         prisma.auditLog.count(),
     ])
 
-    // Enrich with actor emails
     const actorIds = Array.from(new Set(logs.map(l => l.actorId)))
     const actors = await prisma.user.findMany({
         where: { id: { in: actorIds } },

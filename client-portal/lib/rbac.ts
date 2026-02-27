@@ -9,8 +9,6 @@ const ROLE_HIERARCHY: Record<Role, number> = {
     client_admin: 20,
     client_collaborator: 10,
 }
-
-/** Returns true if the user has at least the required role level */
 export function hasRole(userRole: Role, requiredRole: Role): boolean {
     return (ROLE_HIERARCHY[userRole] ?? 0) >= (ROLE_HIERARCHY[requiredRole] ?? 0)
 }
